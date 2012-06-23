@@ -1,0 +1,43 @@
+#Okay, this config file is pretty simple. Under each mob's name, put the amount
+#of XP for it to give.
+Zombie: 10
+Ghast: 50
+Creeper: 30
+Pig: 5
+Chicken: 3
+Sheep: 5
+Cow: 5
+Blaze: 20
+Slime: 50
+Ocelot: 5
+Villager: 5
+Mooshroom: 10
+Squid: 5
+Enderman: 40
+Wolf: 15
+ZombiePigman: 40
+Spider: 10
+Skeleton: 10
+CaveSpider: 20
+Silverfish: 7
+MagmaCube: 15
+SpiderJockey: 70
+SnowGolem: 8
+IronGolem: 20
+EnderDragon: 5000
+Giant: 300
+BabyAnimal: 3
+Player: 40
+
+#Set give-xp-direct to "true" (without the quotes) for mobs to not drop xp,
+#but instead the player gets the xp directly. Default false
+give-xp-direct: false
+
+#This plugin uses metrics. If you do not wish to participate, then set
+#opt-out-metrics to true. Please do not opt out, it supports plugin developers.
+
+opt-out-metrics: false
+
+#DO NOT TOUCH THIS NEXT VALUE, OTHERWISE IT WILL ERASE YOUR CONFIG. IT IS USED
+#FOR CHECKING UPDATES IN THE CONFIG.
+seriously-do-not-change-this: 1
