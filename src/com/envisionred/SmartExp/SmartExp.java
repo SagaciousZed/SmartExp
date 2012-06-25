@@ -6,7 +6,11 @@ import MetricsDependencies.Metrics;
 import com.envisionred.SmartExp.SmartExpEvents;
 import java.io.File;
 import java.io.IOException;
+import org.bukkit.ChatColor;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Player;
 
 /**
  *
@@ -21,11 +25,59 @@ public void onDisable() {
 }
 @Override
 public void onEnable() {
+    final FileConfiguration config = this.getConfig();
     log.info("[SmartExp] EnvisionRed's SmartExp Enabled :D");
     Enableconfig();
     StartMetrics();
     getServer().getPluginManager().registerEvents(new SmartExpEvents(this), this);
-    final FileConfiguration config = this.getConfig();
+    
+}
+@Override
+public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+    if (cmd.getName().equalsIgnoreCase("exp")) {
+        if (args.length < 1) {
+            sender.sendMessage(ChatColor.GREEN + "SmartExp v0.1 by" + ChatColor.DARK_RED + " EnvisionRed");
+            sender.sendMessage(ChatColor.GREEN + "Do " + ChatColor.AQUA + "/exp help " + ChatColor.GREEN + "to see help for the plugin.");
+            return true;
+        }
+        if (args.length >= 1) {
+        if (args[0].equalsIgnoreCase("help")) {
+            Player player = (Player) sender;
+            ShowHelp(player);            
+            return true;
+        }
+        if (args[0].equalsIgnoreCase("check")) {
+            if (!sender.hasPermission("SmartExp.check")) {
+                sender.sendMessage(ChatColor.RED + "You do not have permission for this command.");
+            }
+            if (!(sender instanceof Player)) {
+                sender.sendMessage(ChatColor.RED + "This command can not be sent from the console.");
+            }
+            Player player = (Player) sender;
+            float xp = player.getExp();
+            int level = player.getLevel();
+            player.sendMessage(ChatColor.GREEN + "You are currently level " 
+                    + ChatColor.RED + level + ChatColor.GREEN 
+                    + " with " + ChatColor.AQUA + xp 
+                    + ChatColor.GREEN + " Experience.");
+            return true;
+        }
+       if (args[0].equalsIgnoreCase("reload")) {
+           if (!sender.hasPermission("SmartExp.reload")) {
+               sender.sendMessage(ChatColor.RED + "You do not have permission for this commands.");
+           }
+           this.reloadConfig();
+           boolean NoMetrics = this.getConfig().getBoolean("opt-out-metrics", false);
+           if (NoMetrics == true) {
+               StartMetrics();
+           }
+           sender.sendMessage(ChatColor.GREEN + "SmartExp config reloaded.");
+           return true;
+       } 
+        return true;
+    }
+    }
+    return false;
 }
 
 
@@ -34,11 +86,19 @@ public void onEnable() {
 //Most of this stuff gets handled through Eventhandler
 public void Enableconfig() {
             File configFile = new File(this.getDataFolder() + "/config.yml");
+            int cfgversion = this.getConfig().getInt("seriously-do-not-change-this");
+
 if(!configFile.exists())
          {
          this.saveDefaultConfig();
         }
-    }
+            //check if the config version is different
+            if (cfgversion != 1) {
+                configFile.delete();
+                this.saveDefaultConfig();
+            }    
+}
+
 public void StartMetrics() {
     boolean noMetrics = this.getConfig().getBoolean("opt-out-metrics", false);
         if (this == null) {
@@ -56,7 +116,18 @@ public void StartMetrics() {
         }
     }
 }
-
+public void ShowHelp(Player player) {
+    if (player.hasPermission("SmartExp.check")) {
+    player.sendMessage(ChatColor.AQUA + "/exp check:" + ChatColor.GREEN + " Shows you your Exp stats.");
+    }
+    if (player.hasPermission("SmartExp.reload")) {
+    player.sendMessage(ChatColor.AQUA + "/exp reload:" + ChatColor.GREEN + " Reloads the configuration");
+    }
+    else{
+        player.sendMessage(ChatColor.RED + "Sorry, you don't have permission for "
+                + "any of the commands for SmartExp, so no use showing the help page to you.");
+    }
+}
 
 
 

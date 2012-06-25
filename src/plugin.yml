@@ -1,7 +1,20 @@
 name: SmartExp
 main: com.envisionred.SmartExp.SmartExp
-version: 0.1
+version: 0.2
 commands:
   exp:
     description: Shows the version of SmartEXp
+    default: op
+permissions:
+  SmartExp.*:
+    description: Allows use of all commands from SmartExp
+    default: op
+    children:
+      SmartExp.check: true
+      SmartExp.reload: true
+  SmartExp.check:
+    description: Allows users to check their exp and level.
+    default: op
+  SmartExp.reload:
+    description: Reloads the configuration.
     default: op
