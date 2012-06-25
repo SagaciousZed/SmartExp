@@ -6,6 +6,7 @@ import MetricsDependencies.Metrics;
 import com.envisionred.SmartExp.SmartExpEvents;
 import java.io.File;
 import java.io.IOException;
+import java.text.DecimalFormat;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -36,7 +37,7 @@ public void onEnable() {
 public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
     if (cmd.getName().equalsIgnoreCase("exp")) {
         if (args.length < 1) {
-            sender.sendMessage(ChatColor.GREEN + "SmartExp v0.1 by" + ChatColor.DARK_RED + " EnvisionRed");
+            sender.sendMessage(ChatColor.GREEN + "SmartExp v0.3 by" + ChatColor.DARK_RED + " EnvisionRed");
             sender.sendMessage(ChatColor.GREEN + "Do " + ChatColor.AQUA + "/exp help " + ChatColor.GREEN + "to see help for the plugin.");
             return true;
         }
@@ -50,25 +51,53 @@ public boolean onCommand(CommandSender sender, Command cmd, String label, String
             if (!sender.hasPermission("SmartExp.check")) {
                 sender.sendMessage(ChatColor.RED + "You do not have permission for this command.");
             }
+            if (sender.hasPermission("SmartExp.check.other")) {
+               if (args.length > 1) {
+                   Player player = (this.getServer().getPlayer(args[1]));
+                   if (player == null) {
+                       sender.sendMessage(ChatColor.RED + "Invalid player: " + args[1]);
+                       return true;
+                   }
+                   float xp = player.getExp();
+            int level = player.getLevel();
+            int nextlevel = level + 1;
+            float xpNew = xp * (100);
+            int xpPercent = Math.round(xpNew);
+            String playerName = player.getName();
+            sender.sendMessage(ChatColor.BLUE  + playerName + ChatColor.GREEN + " is currently level " 
+                    + ChatColor.RED + level + ChatColor.GREEN 
+                    + " and " + ChatColor.AQUA + xpPercent + "%"
+                    + ChatColor.GREEN + " of the way to level " 
+                    + ChatColor.RED + nextlevel);
+            return true;
+               } 
+            }
             if (!(sender instanceof Player)) {
                 sender.sendMessage(ChatColor.RED + "This command can not be sent from the console.");
+            return true;
             }
             Player player = (Player) sender;
             float xp = player.getExp();
             int level = player.getLevel();
+            int nextlevel = level + 1;
+            float xpNew = xp * (100);
+            int xpPercent = Math.round(xpNew);
             player.sendMessage(ChatColor.GREEN + "You are currently level " 
                     + ChatColor.RED + level + ChatColor.GREEN 
-                    + " with " + ChatColor.AQUA + xp 
-                    + ChatColor.GREEN + " Experience.");
+                    + " and " + ChatColor.AQUA + xpPercent + "%"
+                    + ChatColor.GREEN + " of the way to level " 
+                    + ChatColor.RED + nextlevel);
             return true;
+        
         }
        if (args[0].equalsIgnoreCase("reload")) {
            if (!sender.hasPermission("SmartExp.reload")) {
-               sender.sendMessage(ChatColor.RED + "You do not have permission for this commands.");
+               sender.sendMessage(ChatColor.RED + "You do not have permission for this command.");
+               return true;
            }
            this.reloadConfig();
            boolean NoMetrics = this.getConfig().getBoolean("opt-out-metrics", false);
-           if (NoMetrics == true) {
+           if (NoMetrics == false) {
                StartMetrics();
            }
            sender.sendMessage(ChatColor.GREEN + "SmartExp config reloaded.");
@@ -83,7 +112,6 @@ public boolean onCommand(CommandSender sender, Command cmd, String label, String
 
 
 //Methods for OnEnable
-//Most of this stuff gets handled through Eventhandler
 public void Enableconfig() {
             File configFile = new File(this.getDataFolder() + "/config.yml");
             int cfgversion = this.getConfig().getInt("seriously-do-not-change-this");

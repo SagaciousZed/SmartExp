@@ -49,10 +49,21 @@ public void GiveExp(EntityDeathEvent event, Player player, int xp) {
     boolean direct = config.getBoolean("give-xp-direct", false); //whether to drop xp or not
     if (direct == true) {
         event.setDroppedExp(0);
+        
         player.giveExp(xp);
+                    float xpNew = player.getExp();
+            int level = player.getLevel();
+            int nextlevel = level + 1;
+            float xpNewer = xpNew * (100);
+            int xpPercent = Math.round(xpNewer);
         player.sendMessage(ChatColor.GREEN + "You have been awarded " 
                 + ChatColor.RED + xp + ChatColor.GREEN + " experience for killing a "
                 + ChatColor.RED + type);
+        if (player.hasPermission("SmartExp.check")) {
+        player.sendMessage(ChatColor.GREEN + "You are now " + ChatColor.RED 
+                + xpPercent + "%" + ChatColor.GREEN + " of the way to level "
+                + ChatColor.RED + nextlevel);
+        }
     } else {
        event.setDroppedExp(xp);
        player.sendMessage(ChatColor.GREEN + "You have been awarded " 

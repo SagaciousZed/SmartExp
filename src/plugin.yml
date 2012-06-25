@@ -1,6 +1,6 @@
 name: SmartExp
 main: com.envisionred.SmartExp.SmartExp
-version: 0.2
+version: 0.3
 commands:
   exp:
     description: Shows the version of SmartEXp
@@ -12,9 +12,13 @@ permissions:
     children:
       SmartExp.check: true
       SmartExp.reload: true
+      SmartExp.check.other: true
   SmartExp.check:
     description: Allows users to check their exp and level.
-    default: op
+    default: not op
   SmartExp.reload:
     description: Reloads the configuration.
+    default: op
+  SmartExp.check.other:
+    description: Allows users to check the exp of other players.
     default: op
