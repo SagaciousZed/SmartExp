@@ -1,6 +1,7 @@
 name: SmartExp
 main: com.envisionred.SmartExp.SmartExp
 version: 0.3
+author: EnvisionRed
 commands:
   exp:
     description: Shows the version of SmartEXp
