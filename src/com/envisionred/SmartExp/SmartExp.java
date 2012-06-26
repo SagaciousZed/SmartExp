@@ -28,17 +28,18 @@ import org.w3c.dom.NodeList;
  * @author EnvisionRed
  */
 public class SmartExp extends JavaPlugin{
-Logger log = this.getLogger();
+    SmartExp plugin = this;
     PluginDescriptionFile pdfile = this.getDescription();
 @Override
 public void onDisable() {
+    Logger log = plugin.getLogger();
     log.info("EnvisionRed's SmartExp disabled :(");
     
 }
 @Override
 public void onEnable() {
     final FileConfiguration config = this.getConfig();
-
+Logger log = plugin.getLogger();
     log.info("EnvisionRed's SmartExp Enabled :D");
     Enableconfig();
     StartMetrics();
@@ -47,6 +48,7 @@ public void onEnable() {
 }
 @Override
 public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+    Logger log = plugin.getLogger();
     if (cmd.getName().equalsIgnoreCase("exp")) {
         if (args.length < 1) {
             sender.sendMessage(ChatColor.GREEN + "SmartExp version " + pdfile.getVersion() + " by" + ChatColor.DARK_RED + " EnvisionRed");
@@ -108,10 +110,6 @@ public boolean onCommand(CommandSender sender, Command cmd, String label, String
                return true;
            }
            this.reloadConfig();
-           boolean NoMetrics = this.getConfig().getBoolean("opt-out-metrics", false);
-           if (NoMetrics == false) {
-               StartMetrics();
-           }
            sender.sendMessage(ChatColor.GREEN + "SmartExp config reloaded.");
            return true;
        } 
@@ -140,6 +138,7 @@ if(!configFile.exists())
 }
 
 public void StartMetrics() {
+    Logger log = plugin.getLogger();
     boolean noMetrics = this.getConfig().getBoolean("opt-out-metrics", false);
         if (this == null) {
             log.warning("Plugin is null so metrics failed to start");
