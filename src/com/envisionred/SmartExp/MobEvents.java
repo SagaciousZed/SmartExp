@@ -19,6 +19,7 @@ import org.bukkit.entity.*;
  * @author EnvisionRed
  */
 public class MobEvents implements Listener{
+
 SmartExp plugin;
 public MobEvents(SmartExp instance) {
     plugin = instance;
@@ -86,7 +87,7 @@ public void GiveExp(EntityDeathEvent event, Player player, int xp) {
     
 }
 public void GetTypeAndAct(EntityDeathEvent event, Player p, Entity s){
-    int Zombie = plugin.getConfig().getInt("Zombie");
+int Zombie = plugin.getConfig().getInt("Zombie");
 int Ghast = plugin.getConfig().getInt("Ghast");
 int Creeper = plugin.getConfig().getInt("Creeper");
 int Pig = plugin.getConfig().getInt("Pig");

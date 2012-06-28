@@ -3,25 +3,18 @@ package com.envisionred.SmartExp;
 import java.util.logging.Logger;
 import org.bukkit.plugin.java.JavaPlugin;
 import MetricsDependencies.Metrics;
-import com.envisionred.SmartExp.MobEvents;
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
-import java.text.DecimalFormat;
+import java.io.InputStream;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import org.bukkit.plugin.PluginDescriptionFile;
 
-import org.w3c.dom.CharacterData;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
+
 
 /**
  *
@@ -30,6 +23,8 @@ import org.w3c.dom.NodeList;
 public class SmartExp extends JavaPlugin{
     SmartExp plugin = this;
     PluginDescriptionFile pdfile = this.getDescription();
+    private FileConfiguration blockConfig = null;
+    private File blocksFile = null;
 @Override
 public void onDisable() {
     Logger log = plugin.getLogger();
@@ -38,17 +33,15 @@ public void onDisable() {
 }
 @Override
 public void onEnable() {
-    final FileConfiguration config = this.getConfig();
 Logger log = plugin.getLogger();
     log.info("EnvisionRed's SmartExp Enabled :D");
-    Enableconfig();
+    Enableconfigs();
     StartMetrics();
     getServer().getPluginManager().registerEvents(new MobEvents(this), this);
     getServer().getPluginManager().registerEvents(new BlockEvents(this), this);
 }
 @Override
 public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-    Logger log = plugin.getLogger();
     if (cmd.getName().equalsIgnoreCase("exp")) {
         if (args.length < 1) {
             sender.sendMessage(ChatColor.GREEN + "SmartExp version " + pdfile.getVersion() + " by" + ChatColor.DARK_RED + " EnvisionRed");
@@ -122,17 +115,16 @@ public boolean onCommand(CommandSender sender, Command cmd, String label, String
 
 
 //Methods for OnEnable
-public void Enableconfig() {
-            File configFile = new File(this.getDataFolder() + "/config.yml");
+public void Enableconfigs() {
+            File mainconfigFile = new File(this.getDataFolder() + "/config.yml");
             int cfgversion = this.getConfig().getInt("seriously-do-not-change-this");
-
-if(!configFile.exists())
+if(!mainconfigFile.exists())
          {
          this.saveDefaultConfig();
         }
-            //check if the config version is different
-            if (cfgversion != 2) {
-                configFile.delete();
+  //check if the config version is different
+            if (cfgversion != 3) {
+                mainconfigFile.delete();
                 this.saveDefaultConfig();
             }    
 }
@@ -167,8 +159,33 @@ public void ShowHelp(Player player) {
                 + "any of the commands for SmartExp, so no use showing the help page to you.");
     }
 }
-
-
-
+public void reloadBlocksConfig() {
+    if (blocksFile == null) {
+    File blocksFile = new File(plugin.getDataFolder(), "Blocks.yml");
+    }
+    blockConfig = YamlConfiguration.loadConfiguration(blocksFile);
+    InputStream blocksConfigStream = plugin.getResource("Blocks.yml");
+    if (blocksConfigStream != null) {
+        YamlConfiguration blocksDefault = YamlConfiguration.loadConfiguration(blocksConfigStream);
+        blockConfig.setDefaults(blocksDefault);
+    }
+}
+public FileConfiguration getBlocksConfig() {
+    if (blockConfig == null) {
+        this.reloadBlocksConfig();
+    }
+    return blockConfig;
+}
+public void saveBlocksConfig() {
+    Logger log = this.getLogger();
+    if (blockConfig == null || blocksFile == null) {
+        return;
+    }
+    try {
+        blockConfig.save(blocksFile);
+    } catch (IOException x) {
+        log.severe("Could not save the blocks config file.");
+    }
+}
 
 }

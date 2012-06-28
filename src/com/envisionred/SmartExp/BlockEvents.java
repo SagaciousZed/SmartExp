@@ -5,11 +5,14 @@
 
 package com.envisionred.SmartExp;
 
+import java.io.File;
 import java.util.*;
+import java.util.logging.Logger;
+
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
-
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -21,10 +24,14 @@ import org.bukkit.entity.Player;
  * @author EnvisionRed
  */
 public class BlockEvents implements Listener{
+	FileConfiguration blockConfig;
+	File blocksFile;
+    Logger log;
     Map<Integer, Integer> ExpMap = new HashMap<Integer, Integer>();
 SmartExp plugin;
 public BlockEvents(SmartExp instance) {
     plugin = instance;
+    log = plugin.getLogger();
 }
     
     @EventHandler (priority = EventPriority.HIGHEST)
@@ -39,15 +46,20 @@ public BlockEvents(SmartExp instance) {
             GiveExp(player, exp, material);
         }
         }
-    public void PutBlocks(){       
-    Set<String> keys = plugin.getConfig().getConfigurationSection("Blocks").getKeys(false);
+    public void PutBlocks(){    
+    	blocksFile = new File(plugin.getDataFolder() + "/Blocks.yml");
+    	blockConfig = plugin.getBlocksConfig();
+    Set<String> keys = blockConfig.getConfigurationSection("Blocks").getKeys(false);
      for (String block : keys) {
          try{
          Integer blockID = Integer.valueOf(block);
-         Integer expAmount = Integer.valueOf(plugin.getConfig().getString("Blocks." +block+".exp"));       
+         Integer expAmount = Integer.valueOf(blockConfig.getString("Blocks." +block+".exp"));       
          ExpMap.put(blockID, expAmount);
-         } catch (NumberFormatException x) {
-             return;
+         } catch (Exception x) {
+             log.warning("Invalid blockID or exp amount specified in SmartExp config");
+             log.warning("blockID as defined in config: " + block);
+             log.warning("Exp amount for " +block+ " as defined in config: " 
+                     + blockConfig.getString("Blocks." +block+ ".exp"));                     
          }
      }       
     }

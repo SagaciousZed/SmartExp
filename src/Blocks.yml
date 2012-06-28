@@ -1,0 +1,9 @@
+#This section allows you to define what blocks give exp, and how much.
+#Make sure to put the block ID of the block, not the name, and then the
+#amount of exp after it, like 56:
+#                               exp: 20     Spacing is VERY important, so don't mess it up.  
+Blocks:
+  56:
+    exp: 20
+  1:
+    exp: 2
