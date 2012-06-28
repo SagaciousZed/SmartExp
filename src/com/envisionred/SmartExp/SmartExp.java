@@ -3,7 +3,7 @@ package com.envisionred.SmartExp;
 import java.util.logging.Logger;
 import org.bukkit.plugin.java.JavaPlugin;
 import MetricsDependencies.Metrics;
-import com.envisionred.SmartExp.SmartExpEvents;
+import com.envisionred.SmartExp.MobEvents;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -43,8 +43,8 @@ Logger log = plugin.getLogger();
     log.info("EnvisionRed's SmartExp Enabled :D");
     Enableconfig();
     StartMetrics();
-    getServer().getPluginManager().registerEvents(new SmartExpEvents(this), this);
-    
+    getServer().getPluginManager().registerEvents(new MobEvents(this), this);
+    getServer().getPluginManager().registerEvents(new BlockEvents(this), this);
 }
 @Override
 public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
@@ -131,7 +131,7 @@ if(!configFile.exists())
          this.saveDefaultConfig();
         }
             //check if the config version is different
-            if (cfgversion != 1) {
+            if (cfgversion != 2) {
                 configFile.delete();
                 this.saveDefaultConfig();
             }    
