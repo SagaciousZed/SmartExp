@@ -25,6 +25,8 @@ public class SmartExp extends JavaPlugin{
     PluginDescriptionFile pdfile = this.getDescription();
     private FileConfiguration blockConfig = null;
     private File blocksFile = null;
+    private FileConfiguration mobConfig = null;
+    private File mobsFile = null;
 @Override
 public void onDisable() {
     Logger log = plugin.getLogger();
@@ -117,13 +119,23 @@ public boolean onCommand(CommandSender sender, Command cmd, String label, String
 //Methods for OnEnable
 public void Enableconfigs() {
             File mainconfigFile = new File(this.getDataFolder() + "/config.yml");
+            blocksFile = new File(this.getDataFolder() + "/Blocks.yml");
+            mobsFile = new File(this.getDataFolder()+ "/Mobs.yml");
             int cfgversion = this.getConfig().getInt("seriously-do-not-change-this");
 if(!mainconfigFile.exists())
          {
          this.saveDefaultConfig();
         }
+if(!blocksFile.exists()) {
+	this.getBlocksConfig().options().copyDefaults(true);
+	this.saveBlocksConfig();
+}
+if(!mobsFile.exists()) {
+	this.getMobsConfig().options().copyDefaults(true);
+	this.saveMobsConfig();
+}
   //check if the config version is different
-            if (cfgversion != 3) {
+            if (cfgversion != 5) {
                 mainconfigFile.delete();
                 this.saveDefaultConfig();
             }    
@@ -161,7 +173,7 @@ public void ShowHelp(Player player) {
 }
 public void reloadBlocksConfig() {
     if (blocksFile == null) {
-    File blocksFile = new File(plugin.getDataFolder(), "Blocks.yml");
+    blocksFile = new File(plugin.getDataFolder(), "Blocks.yml");
     }
     blockConfig = YamlConfiguration.loadConfiguration(blocksFile);
     InputStream blocksConfigStream = plugin.getResource("Blocks.yml");
@@ -170,11 +182,28 @@ public void reloadBlocksConfig() {
         blockConfig.setDefaults(blocksDefault);
     }
 }
+public void reloadMobsConfig() {
+    if (mobsFile == null) {
+    mobsFile = new File(plugin.getDataFolder(), "Mobs.yml");
+    }
+    mobConfig = YamlConfiguration.loadConfiguration(mobsFile);
+    InputStream mobsConfigStream = plugin.getResource("Mobs.yml");
+    if (mobsConfigStream != null) {
+        YamlConfiguration mobsDefault = YamlConfiguration.loadConfiguration(mobsConfigStream);
+        mobConfig.setDefaults(mobsDefault);
+    }
+}
 public FileConfiguration getBlocksConfig() {
     if (blockConfig == null) {
         this.reloadBlocksConfig();
     }
     return blockConfig;
+}
+public FileConfiguration getMobsConfig() {
+    if (mobConfig == null) {
+        this.reloadMobsConfig();
+    }
+    return mobConfig;
 }
 public void saveBlocksConfig() {
     Logger log = this.getLogger();
@@ -185,6 +214,17 @@ public void saveBlocksConfig() {
         blockConfig.save(blocksFile);
     } catch (IOException x) {
         log.severe("Could not save the blocks config file.");
+    }
+}
+public void saveMobsConfig() {
+    Logger log = this.getLogger();
+    if (mobConfig == null || mobsFile == null) {
+        return;
+    }
+    try {
+        mobConfig.save(mobsFile);
+    } catch (IOException x) {
+        log.severe("Could not save the mobs config file.");
     }
 }
 

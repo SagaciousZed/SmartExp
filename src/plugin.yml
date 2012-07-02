@@ -1,6 +1,6 @@
 name: SmartExp
 main: com.envisionred.SmartExp.SmartExp
-version: 0.4
+version: 0.5.1
 author: EnvisionRed
 commands:
   exp:

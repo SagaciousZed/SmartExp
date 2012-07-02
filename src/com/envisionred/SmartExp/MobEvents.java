@@ -5,6 +5,8 @@
 
 package com.envisionred.SmartExp;
 
+import java.io.File;
+
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Entity;
@@ -19,7 +21,8 @@ import org.bukkit.entity.*;
  * @author EnvisionRed
  */
 public class MobEvents implements Listener{
-
+File mobsFile;
+FileConfiguration mobConfig;
 SmartExp plugin;
 public MobEvents(SmartExp instance) {
     plugin = instance;
@@ -46,7 +49,7 @@ public void GiveExp(EntityDeathEvent event, Player player, int xp) {
     Entity mob = event.getEntity();
     EntityType type = mob.getType();
     boolean direct = plugin.getConfig().getBoolean("give-xp-direct", false); //whether to drop xp or not
-    boolean notify = plugin.getConfig().getBoolean("notifications", true);
+    boolean notify = plugin.getConfig().getBoolean("mob-notifications", true);
     if (direct == true) {
         event.setDroppedExp(0);
         
@@ -87,33 +90,35 @@ public void GiveExp(EntityDeathEvent event, Player player, int xp) {
     
 }
 public void GetTypeAndAct(EntityDeathEvent event, Player p, Entity s){
-int Zombie = plugin.getConfig().getInt("Zombie");
-int Ghast = plugin.getConfig().getInt("Ghast");
-int Creeper = plugin.getConfig().getInt("Creeper");
-int Pig = plugin.getConfig().getInt("Pig");
-int Chicken = plugin.getConfig().getInt("Chicken");
-int Sheep = plugin.getConfig().getInt("Sheep");
-int Cow = plugin.getConfig().getInt("Cow");
-int Blaze = plugin.getConfig().getInt("Blaze");
-int Slime = plugin.getConfig().getInt("Slime");
-int Ocelot = plugin.getConfig().getInt("Ocelot");
-int Villager = plugin.getConfig().getInt("Villager");
-int Mooshroom = plugin.getConfig().getInt("Mooshroom");
-int Squid = plugin.getConfig().getInt("Squid");
-int Enderman = plugin.getConfig().getInt("Enderman");
-int Wolf = plugin.getConfig().getInt("Wolf");
-int ZombiePigman = plugin.getConfig().getInt("ZombiePigman");
-int Spider = plugin.getConfig().getInt("Spider");
-int Skeleton = plugin.getConfig().getInt("Skeleton");
-int CaveSpider = plugin.getConfig().getInt("CaveSpider");
-int Silverfish = plugin.getConfig().getInt("Silverfish");
-int MagmaCube = plugin.getConfig().getInt("MagmaCube");
-int SnowGolem = plugin.getConfig().getInt("SnowGolem");
-int IronGolem = plugin.getConfig().getInt("IronGolem");
-int EnderDragon = plugin.getConfig().getInt("EnderDragon");
-int Giant = plugin.getConfig().getInt("Giant");
-int BabyAnimal = plugin.getConfig().getInt("BabyAnimal");
-int player = plugin.getConfig().getInt("Player");
+	mobsFile = new File(plugin.getDataFolder() + "/Mobs.yml");
+	mobConfig = plugin.getMobsConfig();
+int Zombie = mobConfig.getInt("Zombie");
+int Ghast = mobConfig.getInt("Ghast");
+int Creeper = mobConfig.getInt("Creeper");
+int Pig = mobConfig.getInt("Pig");
+int Chicken = mobConfig.getInt("Chicken");
+int Sheep = mobConfig.getInt("Sheep");
+int Cow = mobConfig.getInt("Cow");
+int Blaze = mobConfig.getInt("Blaze");
+int Slime = mobConfig.getInt("Slime");
+int Ocelot = mobConfig.getInt("Ocelot");
+int Villager = mobConfig.getInt("Villager");
+int Mooshroom = mobConfig.getInt("Mooshroom");
+int Squid = mobConfig.getInt("Squid");
+int Enderman = mobConfig.getInt("Enderman");
+int Wolf = mobConfig.getInt("Wolf");
+int ZombiePigman = mobConfig.getInt("ZombiePigman");
+int Spider = mobConfig.getInt("Spider");
+int Skeleton = mobConfig.getInt("Skeleton");
+int CaveSpider = mobConfig.getInt("CaveSpider");
+int Silverfish = mobConfig.getInt("Silverfish");
+int MagmaCube = mobConfig.getInt("MagmaCube");
+int SnowGolem = mobConfig.getInt("SnowGolem");
+int IronGolem = mobConfig.getInt("IronGolem");
+int EnderDragon = mobConfig.getInt("EnderDragon");
+int Giant = mobConfig.getInt("Giant");
+int BabyAnimal = mobConfig.getInt("BabyAnimal");
+int player = mobConfig.getInt("Player");
     if (s instanceof Zombie) {
      GiveExp(event, p, Zombie);
  }

@@ -66,7 +66,7 @@ public BlockEvents(SmartExp instance) {
    
     public void GiveExp(Player player, int exp, Material material) {
        player.giveExp(exp);
-       boolean notify = plugin.getConfig().getBoolean("notifications", true);
+       boolean notify = plugin.getConfig().getBoolean("block-notifications", true);
        if (notify == true) {
            player.sendMessage(ChatColor.GREEN + "You have been awarded "
                    + ChatColor.RED + exp + ChatColor.GREEN + " exp for breaking a "
