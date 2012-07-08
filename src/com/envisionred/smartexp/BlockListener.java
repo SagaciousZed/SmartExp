@@ -1,18 +1,10 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package com.envisionred.smartexp;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-import java.util.logging.Logger;
+import java.text.MessageFormat;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -25,7 +17,9 @@ import org.bukkit.event.block.BlockBreakEvent;
  */
 public class BlockListener implements Listener {
 
-    Map<Integer, Integer> expMap = new HashMap<Integer, Integer>();
+    private final static String AWARD = ChatColor.GREEN + "You have been awarded " + ChatColor.RED + "{0}" + ChatColor.GREEN + " exp for breaking a " + ChatColor.RED + "{1}" + ChatColor.GREEN + " block.";
+    private final static String PROGRESS = ChatColor.GREEN + "You are now " + ChatColor.AQUA + "{0}%" + ChatColor.GREEN + " of the way to level " + ChatColor.RED + "{1}";
+    
     private SmartExp plugin;
 
     public BlockListener(SmartExp instance) {
@@ -34,47 +28,23 @@ public class BlockListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void BlockBreak(BlockBreakEvent event) {
-        PutBlocks();
-        final int typeInt = event.getBlock().getTypeId();
-        if (expMap.containsKey(typeInt)) {
-            GiveExp(event.getPlayer(),
-                    expMap.get(typeInt),
+        final ConfigurationSection blocksConfSection = plugin.getBlocksConfig().getConfigurationSection("Blocks");
+        final String typeID = String.valueOf(event.getBlock().getTypeId());
+        if (blocksConfSection.contains(typeID)) {
+            this.giveExp(event.getPlayer(), 
+                    blocksConfSection.getConfigurationSection(typeID).getInt("exp"),
                     event.getBlock().getType());
         }
     }
 
-    public void PutBlocks() {
-        final FileConfiguration blockConfig = plugin.getBlocksConfig();
-        final Set<String> keys = blockConfig.getConfigurationSection("Blocks").getKeys(false);
-        for (String block : keys) {
-            try {
-                Integer blockID = Integer.valueOf(block);
-                Integer expAmount = Integer.valueOf(blockConfig.getString("Blocks." + block + ".exp"));
-                expMap.put(blockID, expAmount);
-            } catch (NumberFormatException x) {
-                final Logger log = plugin.getLogger();
-                log.warning("Invalid blockID or exp amount specified in SmartExp config");
-                log.warning("blockID as defined in config: " + block);
-                log.warning("Exp amount for " + block + " as defined in config: "
-                        + blockConfig.getString("Blocks." + block + ".exp"));
-            }
-        }
-    }
-
-    public void GiveExp(Player player, int exp, Material material) {
+    private void giveExp(Player player, int exp, Material material) {
         player.giveExp(exp);
-        boolean notify = plugin.getConfig().getBoolean("notifications");
-        if (notify) {
-            player.sendMessage(ChatColor.GREEN + "You have been awarded "
-                    + ChatColor.RED + exp + ChatColor.GREEN + " exp for breaking a "
-                    + ChatColor.RED + material + ChatColor.GREEN + " block.");
+        if (plugin.getConfig().getBoolean("notifications")) {
+            player.sendMessage(MessageFormat.format(AWARD, exp, material));
             if (player.hasPermission("SmartExp.check")) {
-                int nextlevel = player.getLevel() + 1;
-                float xpNewer = player.getExp() * (100);
-                int xpPercent = Math.round(xpNewer);
-                player.sendMessage(ChatColor.GREEN + "You are now " + ChatColor.AQUA
-                        + xpPercent + "%" + ChatColor.GREEN + " of the way to level "
-                        + ChatColor.RED + nextlevel);
+                final int nextlevel = player.getLevel() + 1;
+                final int xpPercent = Math.round(player.getExp() * (100));
+                player.sendMessage(MessageFormat.format(PROGRESS, xpPercent, nextlevel));
             }
         }
     }

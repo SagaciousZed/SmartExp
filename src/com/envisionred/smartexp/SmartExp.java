@@ -9,13 +9,12 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import com.envisionred.smartexp.commands.BaseCommand;
+import com.envisionred.smartexp.commands.ExpCommand;
 
 
 import MetricsDependencies.Metrics;
 
 /**
- * 
  * @author EnvisionRed
  */
 public class SmartExp extends JavaPlugin {
@@ -29,23 +28,18 @@ public class SmartExp extends JavaPlugin {
         if (!(new File(getDataFolder(), "Blocks.yml").exists())) {
             saveResource("Blocks.yml", false);
         }
-        
 //        StartMetrics();
-        
         getServer().getPluginManager().registerEvents(new EntityListner(this), this);
         getServer().getPluginManager().registerEvents(new BlockListener(this), this);
         
-        final BaseCommand expCommand = new BaseCommand(this);
+        final ExpCommand expCommand = new ExpCommand(this);
         getCommand("exp").setExecutor(expCommand);
         
         this.getLogger().info("EnvisionRed's SmartExp Enabled :D");
     }
     
-    
-    
     public void replaceOutdatedConfig() {
-        File configFile = new File(this.getDataFolder(), "config.yml");
-        if (!configFile.exists()) {
+        if (!new File(this.getDataFolder(), "config.yml").exists()) {
             this.saveDefaultConfig();
         } else {
             if (getConfig().getInt("seriously-do-not-change-this") != 3) {
@@ -54,7 +48,6 @@ public class SmartExp extends JavaPlugin {
         }
     }
 
-    @SuppressWarnings("unused")
     private void StartMetrics() {
         final Logger log = this.getLogger();
         final boolean noMetrics = this.getConfig().getBoolean("opt-out-metrics");

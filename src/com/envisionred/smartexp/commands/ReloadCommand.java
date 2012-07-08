@@ -12,6 +12,7 @@ public class ReloadCommand implements CommandExecutor {
     private SmartExp plugin;
 
     public ReloadCommand(SmartExp plugin) {
+        if (plugin == null) throw new IllegalArgumentException("plugin cannot be null");
         this.plugin = plugin;
     }
     
