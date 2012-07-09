@@ -25,8 +25,8 @@ public class SmartExp extends JavaPlugin {
     @Override
     public void onEnable() {
         replaceOutdatedConfig();
-        if (!(new File(getDataFolder(), "Blocks.yml").exists())) {
-            saveResource("Blocks.yml", false);
+        if (!(new File(getDataFolder(), "blocks.yml").exists())) {
+            saveResource("blocks.yml", false);
         }
 //        StartMetrics();
         getServer().getPluginManager().registerEvents(new EntityListner(this), this);
@@ -71,10 +71,10 @@ public class SmartExp extends JavaPlugin {
     
     public void reloadBlocksConfig() {
         if (blocksFile == null) {
-            blocksFile = new File(this.getDataFolder(), "Blocks.yml");
+            blocksFile = new File(this.getDataFolder(), "blocks.yml");
         }
         blockConfig = YamlConfiguration.loadConfiguration(blocksFile);
-        InputStream blocksConfigStream = this.getResource("Blocks.yml");
+        InputStream blocksConfigStream = this.getResource("blocks.yml");
         if (blocksConfigStream != null) {
             YamlConfiguration blocksDefault = YamlConfiguration.loadConfiguration(blocksConfigStream);
             blockConfig.setDefaults(blocksDefault);
