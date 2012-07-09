@@ -52,7 +52,7 @@ public class ExpCommand implements CommandExecutor {
         return false;
     }
    
-    private <T> T[] popArray(T[] args) {
+    private static final <T> T[] popArray(T[] args) {
         return (args.length >= 2) ? Java15Compat.Arrays_copyOfRange(args, 1, args.length) : 
             (T[]) Array.newInstance(args.getClass().getComponentType(), 0);
     }
