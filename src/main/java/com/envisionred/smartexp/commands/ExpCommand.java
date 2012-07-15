@@ -19,12 +19,12 @@ public class ExpCommand implements CommandExecutor {
     public ExpCommand(SmartExp plugin) {
         if (plugin == null) throw new IllegalArgumentException("plugin cannot be null");
         this.plugin = plugin;
-        this.registerCommand("help", new HelpCommand(plugin));
-        this.registerCommand("reload", new ReloadCommand(plugin));
-        this.registerCommand("check", new CheckCommand(plugin));
     }
     
     public void registerCommand(String command, CommandExecutor commandExecutor) {
+        if (commandExecutor == null || command == null || command.isEmpty()) {
+            throw new IllegalArgumentException("invalid command paramters specified");
+        }
         this.commandMap.put(command.toLowerCase(), commandExecutor);
     }
     
@@ -48,8 +48,8 @@ public class ExpCommand implements CommandExecutor {
             } else {
                 sender.sendMessage(ChatColor.GREEN + "SmartExp version " + plugin.getDescription().getVersion() + " by" + ChatColor.DARK_RED + " EnvisionRed");
                 sender.sendMessage(ChatColor.GREEN + "Do " + ChatColor.AQUA + "/exp help " + ChatColor.GREEN + "to see help for the plugin.");
+                return true;
             }
-        return false;
     }
    
     private static final <T> T[] popArray(T[] args) {

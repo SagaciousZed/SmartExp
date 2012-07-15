@@ -5,11 +5,15 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.logging.Logger;
 
+import org.bukkit.command.CommandExecutor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import com.envisionred.smartexp.commands.CheckCommand;
 import com.envisionred.smartexp.commands.ExpCommand;
+import com.envisionred.smartexp.commands.HelpCommand;
+import com.envisionred.smartexp.commands.ReloadCommand;
 
 
 import MetricsDependencies.Metrics;
@@ -28,12 +32,25 @@ public class SmartExp extends JavaPlugin {
         if (!(new File(getDataFolder(), "blocks.yml").exists())) {
             saveResource("blocks.yml", false);
         }
+        
 //        StartMetrics();
+        
         getServer().getPluginManager().registerEvents(new EntityListner(this), this);
         getServer().getPluginManager().registerEvents(new BlockListener(this), this);
-        
+
+        final CommandExecutor helpCommandExecutor = new CheckCommand(this);
+        final CommandExecutor checkCommandExecutor = new HelpCommand(this);
+        final CommandExecutor reloadCommandExecutor = new ReloadCommand(this);
         final ExpCommand expCommand = new ExpCommand(this);
-        getCommand("exp").setExecutor(expCommand);
+        
+        this.getCommand("exp-check").setExecutor(checkCommandExecutor);
+        this.getCommand("exp-help").setExecutor(helpCommandExecutor);
+        this.getCommand("exp-reload").setExecutor(reloadCommandExecutor);
+        
+        expCommand.registerCommand("check", checkCommandExecutor);
+        expCommand.registerCommand("help", helpCommandExecutor);
+        expCommand.registerCommand("reload", reloadCommandExecutor);
+        this.getCommand("exp").setExecutor(expCommand);
         
         this.getLogger().info("EnvisionRed's SmartExp Enabled :D");
     }

@@ -6,6 +6,16 @@ commands:
   exp:
     description: Shows the version of SmartEXp
     default: op
+    usage: See /exp-help
+  exp-check:
+    description: Check your current exp or another player
+    usage: /<command> [player name]
+  exp-help:
+    description: Displays
+    usage: /<command>
+  exp-reload:
+    description: Reloads the configuration
+    usage: /<command>
 permissions:
   SmartExp.*:
     description: Allows use of all commands from SmartExp
