@@ -4,18 +4,19 @@ version: 0.4
 author: EnvisionRed
 commands:
   exp:
-    description: Shows the version of SmartEXp
+    description: Shows the version of SmartExp
     default: op
     usage: See /exp-help
   exp-check:
     description: Check your current exp or another player
     usage: /<command> [player name]
   exp-help:
-    description: Displays
+    description: Displays help for this plugin
     usage: /<command>
   exp-reload:
     description: Reloads the configuration
     usage: /<command>
+    permission: SmartExp.reload
 permissions:
   SmartExp.*:
     description: Allows use of all commands from SmartExp
