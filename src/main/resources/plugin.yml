@@ -1,5 +1,5 @@
 name: SmartExp
-main: com.envisionred.SmartExp.SmartExp
+main: com.envisionred.smartexp.SmartExp
 version: 0.4
 author: EnvisionRed
 commands:
